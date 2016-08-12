@@ -1,0 +1,356 @@
+<html>
+<head>
+<title>ArithmAttack Source Code</title>
+<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+<meta name = "keywords" content = "math quiz, arithmetic quiz, ArithmAttack, 
+     K-12, free game, learning software, educational software">
+<meta name = "description" content = "arithmetic learning game: How many 
+     randomly generated arithmetic problems can you answer in 60 seconds?">
+<script language="JavaScript">
+<!-- Hide script
+
+//Declare and initialize global variables
+  var expression = "";   //The equation to be solved
+  var A = 0;             //Random number for the equation
+  var B = 0;             //Random number for the equation
+  var answer;            //Hold the answer that is entered
+  var rightAns;          //Hold correct answer
+  var counter = 0;       //Count the number of equations generated
+  var correct = 0;       //Count the number of correct answers
+  var incorrect = 0;     //Count the number of incorrect answers
+  var L = 0;             //User request for lowest random number
+  var H = 12;            //User request for highest random number
+  var t = 61;            //Set starting value for timer countdown -- LINE 20
+  var ticker;            //Variable for setTimeout
+     
+//Reinitialize global variables
+function initialize() {
+  expression = "";   //The equation to be solved
+  A = 0;             //Random number for the equation
+  B = 0;             //Random number for the equation
+  counter = 0;       //Count the number of equations generated
+  correct = 0;       //Count the number of correct answers
+  incorrect = 0;     //Count the number of incorrect answers
+  t = 61;            //Set starting value for timer countdown
+  document.mmForm.timeClock.value = 60;
+  document.mmForm.question.value = expression;
+  document.mmForm.answer.value = "";
+  document.mmForm.correct.value = correct;
+  document.mmForm.incorrect.value = incorrect;
+}
+
+//Create fuction to stop active game without re-initializing everything
+function stopPlay() {                                   //LINE 40
+  expression = "";   //The equation to be solved
+  A = 0;             //Random number for the equation
+  B = 0;             //Random number for the equation
+  document.mmForm.question.value = expression;
+  document.mmForm.answer.value = "";
+}
+
+function countDown() {
+  t--;
+  if (t > 0) {
+    ticker = setTimeout('countDown()', 1000);
+    document.mmForm.timeClock.value = t;
+  } else {
+    //Time is up, so stop and show final score
+    clearTimeout(ticker);
+    document.mmForm.timeClock.value = t;
+    stopPlay();
+    showResult();
+  }                                                               
+}                                                    //LINE 60
+
+//When time runs out, display the results
+function showResult() {
+    var z = eval(correct + incorrect);
+    alert("Time's up! Out of " + z + " tries, you got " + correct + " right and " + incorrect + " wrong.");
+}
+
+//Generate two random numbers between L and H
+function genNumbers() {
+  H = eval(document.mmForm.hiNum.options[document.mmForm.hiNum.options.selectedIndex].value);
+  L = eval(document.mmForm.loNum.options[document.mmForm.loNum.options.selectedIndex].value);  
+  //Make sure H >= L
+  if (L > H) {
+    var K = L;
+    L = H;
+    H = K;
+    //Change hiNum and loNum readouts if needed
+    document.mmForm.hiNum.options.selectedIndex = H-1;
+    document.mmForm.loNum.options.selectedIndex = L;
+  }                                                  //LINE 80
+  
+  A = Math.floor((Math.random() * (H - L + 1)) + L);
+  B = Math.floor((Math.random() * (H - L + 1)) + L);
+  //Make sure A and B do not both equal zero
+  if ((A == 0) && (B == 0)) {
+    while (A == 0) {
+      A = Math.floor((Math.random() * (H - L + 1)) + L);
+    }
+  }
+  getOperation();
+}
+
+//Match the two random numbers to the right operation
+function getOperation() {
+  if (document.mmForm.operation.options.selectedIndex == 0) {
+    add(A, B);
+  }
+  if (document.mmForm.operation.options.selectedIndex == 1) {
+    subtract(A, B);
+  }                                                   //LINE 100
+  if (document.mmForm.operation.options.selectedIndex == 2) {
+    multiply(A, B);
+  }
+  if (document.mmForm.operation.options.selectedIndex == 3) {
+    divide(A, B);
+  }
+  //If random operation is selected, generate a random number between 0 and 3
+  if (document.mmForm.operation.options.selectedIndex == 4) {
+    var K = Math.floor(4 * Math.random());
+    if (K == 0) {
+      add(A, B);
+    }
+    if (K == 1) {
+      subtract(A, B);
+    }
+    if (K == 2) {
+      multiply(A, B);
+    }                                              
+    if (K == 3) {
+      divide(A, B);                                  //LINE 120
+    }
+  }
+}
+
+//Generate addition expression
+function add(x, y) {
+  expression = x + " + " + y;
+  document.mmForm.question.value = expression;
+  rightAns = eval(expression);
+  document.mmForm.answer.value = "";
+  document.mmForm.answer.focus();
+}
+
+//Generate subtraction expression
+function subtract(x, y) {
+  if (x < y) {
+    var z = x;
+    x = y;
+    y = z;
+  }                                             //LINE 140
+  expression = x + " - " + y;
+  document.mmForm.question.value = expression;
+  rightAns = eval(expression);
+  document.mmForm.answer.value = "";
+  document.mmForm.answer.focus();
+}
+
+//Generate multiplication expression
+function multiply(x, y) {
+  expression = x + " * " + y;
+  document.mmForm.question.value = x + " x " + y;
+  rightAns = eval(expression);
+  document.mmForm.answer.value = "";
+  document.mmForm.answer.focus();
+}
+
+//Generate division expression
+function divide(x, y) {
+  //Prevent division by zero
+  if (eval(y) == 0) {                          //LINE 160
+    var temp = y;
+    y = x;
+    x = temp;
+  }
+  var z = eval(x * y);
+  expression = z + "/" + y;
+  document.mmForm.question.value = z + " / " + y;
+  rightAns = eval(expression);
+  document.mmForm.answer.value = "";
+  document.mmForm.answer.focus();
+}
+
+//Trim spaces and zeros from front of answer and spaces off the back
+function trim(inputStr) {
+  //Make sure the zero is not a legitimate answer
+  if (inputStr != "0") {
+    //Then trim zeros and spaces off the front 
+    while ((inputStr != "0") && ((inputStr.charAt(0) == " ") || (inputStr.charAt(0) == "0"))) {
+      inputStr = inputStr.substring(1, inputStr.length);
+      document.mmForm.answer.value = inputStr;             //LINE 180
+    }
+    //Then trim spaces off the back
+    while (inputStr.charAt(inputStr.length - 1) == " ") {
+      inputStr = inputStr.substring(0, inputStr.length-1);
+      document.mmForm.answer.value = inputStr;
+    }  
+  }
+}
+
+//Check the answer to be sure it's all numbers
+function isNum(inputStr) {
+  for (var i = 0; i < inputStr.length; i++) {
+    var aChar = inputStr.charAt(i);
+    if ((aChar < "0") || (aChar > "9")) {
+      alert("Please enter only numbers.");
+	return false;
+      break;
+    }
+  }
+  return true                                         //LINE 200
+}
+
+//Handle routing logistics of checking the answer to be sure it's all numbers
+function checkIt(inputStr) {
+  if (isNum(inputStr)) {
+    //inputStr is a number
+     checkAnswer(inputStr);
+  } else {
+    document.mmForm.answer.focus();
+    document.mmForm.answer.select();
+  }
+}
+
+//Check the answer to see if it's right
+function checkAnswer(answer) {
+  //Make sure an expression has been generated and the question answered
+  if ((document.mmForm.question.value != "") && (document.mmForm.answer.value != "")) {
+    //When it's right, score it
+    if(parseInt(answer) == rightAns) {
+      correct++;                                       //LINE 220
+      counter++;
+
+      document.mmForm.correct.value = correct;
+      genNumbers(); 
+    //If not, generate a new expression
+    } else {   
+   //If it's wrong, tell the user
+      incorrect++;
+      counter++;
+      document.mmForm.incorrect.value = incorrect;
+      alert("Sorry: " + document.mmForm.question.value + " = " + rightAns);
+      genNumbers();     //If not, generate a new expression
+    }
+  } else {
+    if (document.mmForm.question.value == "") {
+      alert("Click 'Go' to see your first problem.");
+      initialize();
+    } else {
+    alert("Oops! You forgot to enter an answer.");
+    document.mmForm.answer.focus();
+    }
+  }                                                    //LINE 240
+}
+
+//Stop hiding script -->
+</script>
+</head>
+
+<body bgcolor="#00FA9A" link="RED" vlink="PURPLE">
+<img src="mathfun.gif" alt="Computer man" style="width:1325px;height:230px;">
+<center>
+  <h1><font face="arial" color = "GREEN">The </font> <font face="arial" color = "RED">Arithmetic</font><font face="arial" color = "BLUE">Game</font></h1>
+  <font face="arial" color = "#000080"> <b>How many computer-generated arithmetic 
+  problems can you answer in 60 seconds?</b> </font> 
+  <form name = "mmForm" method = POST>
+    <p> 
+    <table border = 0 width = 500>
+      <tr> 
+        <td> <font face="arial" color = "#000080"><b>1. Choose an operation:</b></font> 
+        </td>
+        <td> <font face="arial" color = "#000080"><b>2. Choose numbers from 0 
+          to 12:</b></font> </td>
+      </tr>
+      <tr> 
+        <td valign = top> 
+          <select name = "operation" size = 5>
+            <option SELECTED>Add</option>
+            <option>Subtract</option>
+            <option>Multiply</option>
+            <option>Divide</option>
+            <option>Random operator</option>
+          </select>
+        </td>
+        <td> <font face="arial" size = -1 color = "#000080">Choose high number:</font> 
+          <select name="hiNum">
+            <option value = 1> 1</option>
+            <option value = 2> 2</option>
+            <option value = 3> 3</option>
+            <option value = 4> 4</option>
+            <option value = 5> 5</option>
+            <option value = 6> 6</option>
+            <option value = 7> 7</option>
+            <option value = 8> 8</option>
+            <option value = 9> 9</option>
+            <option value = 10>10</option>
+            <option value = 11>11</option>
+            <option SELECTED value = 12>12</option>
+          </select>
+          <p> <font face="arial" size = -1 color = "#000080">Choose low number:</font> 
+            <select name="loNum">
+              <option SELECTED value = 0> 0</option>
+              <option value = 1> 1</option>
+              <option value = 2> 2</option>
+              <option value = 3> 3</option>
+              <option value = 4> 4</option>
+              <option value = 5> 5</option>
+              <option value = 6> 6</option>
+              <option value = 7> 7</option>
+              <option value = 8> 8</option>
+              <option value = 9> 9</option>
+              <option value = 10>10</option>
+              <option value = 11>11</option>
+            </select>
+            <br>
+            <br>
+        </td>
+      </tr>
+      <tr> 
+        <td colspan = 2> <font face="arial" color="#000080"><b>3. When you're 
+          ready, click 
+          <input type = button name = "go" value = "Go" 
+       onClick = "clearTimeout(ticker); initialize(); countDown(); genNumbers();">
+          . To stop, click 
+          <input type = button name = "stop" value = "Stop" 
+       onClick = "clearTimeout(ticker); stopPlay();">
+          . </b></font>
+          <p><font face="arial" color="#000080"><b> 4. Enter the answer and click 
+            "Check Answer":</b></font>
+        </td>
+      </tr>
+      <tr valign = TOP> 
+        <td> <font face="arial" color="#000080">
+          <input type = text name = "question" size = 8 value="" 
+       onFocus = "this.blur();">
+          = 
+          <input type = text name="answer" size = 3 value="">
+          </font>
+          <p> <font face="arial" color="#000080">
+            <input type = button name = "checkAns" value = "Check Answer"
+       onClick = "trim(document.mmForm.answer.value);
+                  checkIt(document.mmForm.answer.value);">
+
+            </font>
+        </td>
+        <td valign = top> <font face="arial" size = -1 color = "#000080"> 
+          <input type = text name="timeClock" size = 3 value=60
+       onFocus = "blur();">
+          seconds remaining<br>
+          <input type = text name="correct" size = 3 value=0
+       onFocus = "blur();">
+          answered correctly<br>
+          <input type = text name="incorrect" size = 3 value=0
+       onFocus = "blur();">
+          answered incorrectly </font> </td>
+      </tr>
+    </table>
+  </form>
+</center>
+<p> 
+<p> 
+<p><font color="#000080"> </font> </p>
+
+</html>

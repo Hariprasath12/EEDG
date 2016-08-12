@@ -1,0 +1,102 @@
+#frame0,#frame1,#frame2,#iframe{
+ margin: 0px;
+padding: 0px;
+border: 0px none;
+font: inherit;
+vertical-align: baseline;
+}
+
+
+#frame0 {
+
+  width: 100%;
+   position: absolute;
+  height: 15%;
+  left: 0px;
+  top:0px;
+   overflow: hidden;
+   color:#333334;
+   
+   background-color: #383B43;
+ 
+   }
+
+#frame1 {
+  width: 50%;
+   position: absolute;
+   top:18%;
+
+   left: 0px;
+   height: 80%;
+   overflow: hidden;
+   border-radius: 3px;
+   border-right: 10px ;
+   border-color: #000099;
+  
+}
+#frame2 {
+  
+  top:18%;
+   width: 50%;
+   position: absolute;
+   right: 0px;
+   height: 85%;
+   overflow: hidden;
+   border-radius: 3px;
+ pointer-events: none;
+   
+}
+#iframe1{width: 100%;
+    height: 100%;
+   overflow: hidden;
+   border: 0px;
+
+}
+body{
+  background-color: #f7f7f7f7;
+}
+#canvas{
+ 
+  margin-left: 40px;
+}
+#copy{
+   position: absolute;
+bottom: -20px;
+  width: auto;
+  left: 20%;
+
+height: 20px;
+    background-color: #383B43;
+}
+a{
+    text-decoration: none;
+    color: #FFF;
+
+  }
+  li{ 
+    display:inline;
+    margin: 20px;
+   }
+  #header{
+    position: absolute;
+    top: 20px;
+   
+   font-size: 1.1em;
+   display: inline;
+
+   
+  }
+  #h1{
+    font-style: italic;
+    font-size: 2em;
+    color: #FFF;
+    font-weight: 3px;
+  }
+
+  #ot1{
+   
+   padding-left:700px; 
+
+  }
+
+

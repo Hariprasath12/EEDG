@@ -1,0 +1,9 @@
+<?php
+include'session.php';
+if(empty($login_session)){
+	header("Location:loginmain.html");
+}
+else{
+	header("Location:indexl.php");
+}
+?>
